@@ -1,0 +1,85 @@
+import java.util.Scanner;
+
+public class Dijkstra {
+
+    static final int INF = Integer.MAX_VALUE;
+
+    // Finds the unvisited vertex with minimum distance (returns -1 if none reachable)
+    static int minDistanceVertex(int[] distance, boolean[] visited, int n) {
+        int min = INF;
+        int u = -1;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && distance[i] < min) {
+                min = distance[i];
+                u = i;
+            }
+        }
+        return u;
+    }
+
+    static int[] dijkstra(int[][] graph, int source, int n) {
+        int[] distance = new int[n];
+        boolean[] visited = new boolean[n];
+
+        // Initialize
+        for (int i = 0; i < n; i++) {
+            distance[i] = INF;
+            visited[i] = false;
+        }
+
+        distance[source] = 0;
+
+        for (int count = 0; count < n; count++) {
+
+            // u <- unvisited vertex with minimum distance
+            int u = minDistanceVertex(distance, visited, n);
+
+            if (u == -1) {
+                break;
+            }
+
+            visited[u] = true;
+
+            // Relax edges
+            for (int v = 0; v < n; v++) {
+                if (!visited[v] &&
+                    graph[u][v] != 0 &&
+                    distance[u] != INF &&
+                    distance[u] + graph[u][v] < distance[v]) {
+                    distance[v] = distance[u] + graph[u][v];
+                }
+            }
+        }
+        return distance;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of vertices: ");
+        int n = sc.nextInt();
+
+        int[][] graph = new int[n][n];
+        System.out.println("Enter the adjacency matrix (0 for no edge):");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                graph[i][j] = sc.nextInt();
+            }
+        }
+
+        System.out.print("Enter source vertex: ");
+        int source = sc.nextInt();
+
+        int[] distance = dijkstra(graph, source, n);
+
+        System.out.println("\nVertex\tDistance from Source " + source);
+        for (int i = 0; i < n; i++) {
+            if (distance[i] == INF) {
+                System.out.println(i + "\tINF");
+            } else {
+                System.out.println(i + "\t" + distance[i]);
+            }
+        }
+        sc.close();
+    }
+}
