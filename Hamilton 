@@ -1,0 +1,45 @@
+import java.util.*;
+
+public class Hamiltonian {
+    static int n;
+    static int[][] g;
+    static int[] path;
+    static boolean[] used;
+
+    static boolean solve(int pos) {
+        if (pos == n) return g[path[n - 1]][0] == 1;
+
+        for (int v = 1; v < n; v++) {
+            if (g[path[pos - 1]][v] == 1 && !used[v]) {
+                path[pos] = v;
+                used[v] = true;
+
+                if (solve(pos + 1)) return true;
+
+                used[v] = false;
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        n = sc.nextInt();
+        g = new int[n][n];
+        path = new int[n];
+        used = new boolean[n];
+
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                g[i][j] = sc.nextInt();
+
+        used[0] = true;
+
+        if (solve(1)) {
+            for (int p : path) System.out.print(p + " ");
+            System.out.println(0);
+        } else {
+            System.out.println("No Hamiltonian Cycle");
+        }
+    }
+}
